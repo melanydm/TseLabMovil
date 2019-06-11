@@ -1,10 +1,10 @@
 package com.example.fakenews.apiWeb;
 
-import org.json.JSONObject;
+import com.example.fakenews.apiModel.LoginBody;
+import com.example.fakenews.apiModel.LoginResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiInterface {
@@ -24,9 +24,11 @@ public interface ApiInterface {
     /*@GET("director/carrera/")
     public Call<List<DtCarrera>> getAllCarreras();*/
 
-    @Headers("Content-Type: application/json")
+    //@Headers({"Content-type: application/json",
+            //"Accept: */*"})
     @POST("login/")  // call<String>
-    Call<String> login(@Body JSONObject loginBody);
+    Call<LoginResponse> login(@Body LoginBody loginBody);
+
 /*
     @POST("estudiante/token/")
     Call<String> enviarTokenFirebase(@Header("Authorization") String authorization, @Header("Content-Type") String contentType, @Body TokenFirebaseBody tokenFirebaseBody);

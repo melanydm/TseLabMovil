@@ -9,8 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fakenews.apiModel.LoginBody;
+import com.example.fakenews.apiModel.LoginResponse;
 import com.example.fakenews.apiWeb.ApiClient;
 import com.example.fakenews.apiWeb.ApiInterface;
+import com.example.fakenews.prefs.SessionPrefs;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,9 +25,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,11 +33,11 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
 
     GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
-    private static final String TAG = "SignInActivity >>>>>>>>> ";
+    private static final String TAG = "SignInActivity >>>> ";
     SignInButton signInButton;
     TextView statusTextView;
     GoogleSignInClient mGoogleSignInClient;
-    String url = "http://r179-27-99-70.ir-static.anteldata.net.uy:8080/FakeNews-web/RESTServices/citizen/";
+    String url = "https://r179-27-99-70.ir-static.anteldata.net.uy:8443/FakeNews-web/RESTServices/citizen/";
     private ApiInterface restApi;
 
 
@@ -116,7 +116,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.w(TAG, "signInResult: ok=" + account.getDisplayName());
+            Log.w(TAG, "Google signInResult: ok=" + account.getDisplayName());
             String idToken = account.getIdToken();
             String mail = account.getEmail();
             sendIdTokenMail(idToken, mail);
@@ -133,23 +133,16 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
         }
     }
 
-    private void sendIdTokenMail(String token, final String mail){
-        String body = mail + ", " + token; //new LoginBody(mail, token)
-        JSONObject jsonObj = new JSONObject();
+    private void sendIdTokenMail(String idtoken, final String mail){
+        // String body = "{" + "\"mail\": \"" + mail + "\",\"mail\": \"" + idtoken + "\"}"; //new LoginBody(mail, token)
 
-        try {
-            jsonObj.put("email", mail);
-            jsonObj.put("token_id", token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        Call<String> loginCall = restApi.login(jsonObj);
+        Call<LoginResponse> loginCall = restApi.login(new LoginBody(mail, idtoken));
         // Log.w(TAG, "lalalala, por encolar el pedido" + restApi.toString());
-        loginCall.enqueue(new Callback<String>() {
+        loginCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse
-                    (Call<String> call, Response<String> response) {
+                    (Call<LoginResponse> call, Response<LoginResponse> response) {
 
                 // Ocultar la barra de progreso
                 // showProgress(false);
@@ -157,10 +150,10 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
                 if (response.isSuccessful()){
                     Log.w(TAG, "login response successful");
                     if (response.body() != null){
-                        if (!(response.body().contains("Error"))){
+                        if (!(response.body().toString().contains("Error"))){
 
                             // Guardar token de sesion y userID en preferencias
-                            //SessionPrefs.get(GoogleLoginActivity.this).guardarToken(response.body(), mail);
+                            SessionPrefs.get(GoogleLoginActivity.this).guardarToken(response.body().getJwt(), mail);
                             Log.w(TAG, "response = " + response.body());
                             // Ir al menu principal (main activity)
 
@@ -181,19 +174,27 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
                 // Procesar errores
                 else {
 
-                    String error = response.body();
-                    Log.w(TAG, "response error: " + error ); //+ " " +
-                    Log.w(TAG, "error" + response.code() + response.errorBody());
+                    String error = response.body().toString();
+                    Log.w(TAG, "response: " + error + response.headers());
+                    Log.w(TAG, "más error" + response.toString());
+                    Log.w(TAG, "response error: " + error + response.code());//+ " " +
+                    Log.w(TAG, "error" + response.errorBody().toString() + response.message() + response.raw());
                             //showLoginError(error);
                 }
             }
 
             @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.w(TAG, "response error on failure: " + t + t.getCause());
+
+            }
+
+            /*@Override
             public void onFailure(Call<String> call, Throwable t) {
                 /*showProgress(false);
-                showLoginError(t.getMessage());*/
+                showLoginError(t.getMessage());
                 Log.w(TAG, "response error on failure: " + t + t.getCause());
-            }
+            }*/
         });
 
     }
