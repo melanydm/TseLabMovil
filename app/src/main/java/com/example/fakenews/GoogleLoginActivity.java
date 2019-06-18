@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fakenews.apiModel.LoginBody;
 import com.example.fakenews.apiModel.LoginResponse;
@@ -23,8 +21,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,9 +37,10 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "SignInActivity >>>> ";
     SignInButton signInButton;
+    Button signOutButton;
     TextView statusTextView;
     GoogleSignInClient mGoogleSignInClient;
-    String url = "https://r179-27-99-70.ir-static.anteldata.net.uy:8443/FakeNews-web/RESTServices/citizen/";
+    String url = "https://r179-27-99-70.ir-static.anteldata.net.uy:8443/FakeNews-web/RESTServices/";
     private ApiInterface restApi;
 
 
@@ -62,8 +65,10 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
                 .build();
 
         signInButton = findViewById(R.id.sign_in_button);
+        signOutButton = findViewById(R.id.sign_out_button);
         statusTextView = findViewById(R.id.textView);
         signInButton.setOnClickListener(this);
+        signOutButton.setOnClickListener(this);
 
     } // onCreate
 
@@ -72,7 +77,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
         super.onStart();
         //  Toast.makeText(getApplicationContext(),"Now onStart() calls", Toast.LENGTH_LONG).show(); //onStart Called
 
-        // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
         //  updateUI(account);
 
 
@@ -85,20 +90,28 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
             case R.id.sign_in_button:
                 signIn();
                 break;
+            case R.id.sign_out_button:
+                signOut();
+                break;
         }
     }
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-/*
-        String email = account.getEmail();
-        String tokenId = account.getIdToken();
-        requestLogin(email, tokenId);
-*/
-
 
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+        signInButton.setVisibility(View.VISIBLE);
+        signOutButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -122,7 +135,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
             sendIdTokenMail(idToken, mail);
             //
             // updateUI(account);
-            Intent intent = new Intent(this, com.example.fakenews.MainActivity.class);
+            Intent intent = new Intent(this, com.example.fakenews.DisplayHechosActivity.class);
             startActivity(intent);
 
         } catch (ApiException e) {
@@ -134,8 +147,6 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
     }
 
     private void sendIdTokenMail(String idtoken, final String mail){
-        // String body = "{" + "\"mail\": \"" + mail + "\",\"mail\": \"" + idtoken + "\"}"; //new LoginBody(mail, token)
-
 
         Call<LoginResponse> loginCall = restApi.login(new LoginBody(mail, idtoken));
         // Log.w(TAG, "lalalala, por encolar el pedido" + restApi.toString());
@@ -175,10 +186,10 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
                 else {
 
                     String error = response.body().toString();
-                    Log.w(TAG, "response: " + error + response.headers());
+                    /*Log.w(TAG, "response: " + error + response.headers());
                     Log.w(TAG, "más error" + response.toString());
                     Log.w(TAG, "response error: " + error + response.code());//+ " " +
-                    Log.w(TAG, "error" + response.errorBody().toString() + response.message() + response.raw());
+                    Log.w(TAG, "error" + response.errorBody().toString() + response.message() + response.raw());*/
                             //showLoginError(error);
                 }
             }

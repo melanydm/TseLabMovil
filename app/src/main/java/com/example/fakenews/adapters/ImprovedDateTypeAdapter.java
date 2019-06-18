@@ -5,7 +5,7 @@ package com.example.fakenews.adapters;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-        import com.google.gson.Gson;
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;

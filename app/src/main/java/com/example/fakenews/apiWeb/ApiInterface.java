@@ -1,10 +1,14 @@
 package com.example.fakenews.apiWeb;
 
+import com.example.fakenews.apiModel.Hecho;
 import com.example.fakenews.apiModel.LoginBody;
 import com.example.fakenews.apiModel.LoginResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiInterface {
@@ -21,12 +25,12 @@ public interface ApiInterface {
     /*@GET("/admin/usuario")
     public Call<List<DtUsuario>> getAllUsuarios();*/
 
-    /*@GET("director/carrera/")
-    public Call<List<DtCarrera>> getAllCarreras();*/
+    @GET("getHechos/")
+    Call<List<Hecho>> getAllHechos();
 
     //@Headers({"Content-type: application/json",
             //"Accept: */*"})
-    @POST("login/")  // call<String>
+    @POST("citizen/login/")  // call<String>
     Call<LoginResponse> login(@Body LoginBody loginBody);
 
 /*

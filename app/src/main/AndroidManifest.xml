@@ -13,13 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".DisplayHechosActivity"></activity>
+        <activity android:name=".ScrollActivity" />
+        <activity
+            android:name=".NavDrawerActivity"
+            android:label="@string/title_activity_nav_drawer"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCeUn6BQYQEE8Ktb-IWtP-hT_cyQz__ldA"/>
-
-            <!--android:value="AIzaSyD8afXS1jMfiwpXV1gU7vWAY26JbtAPhrk" /-->
-
+            android:value="AIzaSyCeUn6BQYQEE8Ktb-IWtP-hT_cyQz__ldA" /> <!-- android:value="AIzaSyD8afXS1jMfiwpXV1gU7vWAY26JbtAPhrk" / -->
         <activity android:name=".GoogleLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
