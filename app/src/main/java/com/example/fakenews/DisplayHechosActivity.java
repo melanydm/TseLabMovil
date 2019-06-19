@@ -80,7 +80,7 @@ public class DisplayHechosActivity extends AppCompatActivity {
 
                         ArrayAdapter<Hecho> adapter = new MiAdaptador(DisplayHechosActivity.this, R.id.listViewHechos, hechos);
 
-                        adapter.setDropDownViewResource(R.layout.activity_display_hechos); // hecho_row
+                        adapter.setDropDownViewResource(R.layout.hecho_row); // hecho_row
 
                         listViewHechos.setAdapter(adapter);
 
@@ -139,25 +139,44 @@ public class DisplayHechosActivity extends AppCompatActivity {
 
         public View getCustomView(int position, View convertView, ViewGroup parent) {
 
-            LayoutInflater inflater=getLayoutInflater();
+            LayoutInflater inflater = getLayoutInflater();
 
-            View row = inflater.inflate(R.layout.activity_display_hechos, parent, false); // add hecho_row instead of activity_display_jehchos
+            View row = inflater.inflate(R.layout.hecho_row, parent, false); // add hecho_row instead of activity_display_jehchos
 // setear los atributos del hecho en textviews
-            TextView idCurso = row.findViewById(R.id.titulo);
-            idCurso.setText("Título del hecho: " + lista.get(position).getTitulo());
+            TextView titulo = row.findViewById(R.id.titulo);
+            /*if (lista.get(position).getTitulo().isEmpty()){
+                titulo.setText("Título del hecho vacío");
+            } else {*/
+                titulo.setText("Título del hecho: " + lista.get(position).getTitulo());
+            //}
 
-            TextView nombreAsignatura = row.findViewById(R.id.url);
-            nombreAsignatura.setText("Url: " + lista.get(position).getUrl());
+            TextView url = row.findViewById(R.id.url);
+            /*if (lista.get(position).getUrl().isEmpty()){
+                url.setText("URL del hecho vacía");
+            } else {*/
+                url.setText("Url: " + lista.get(position).getUrl());
+            //}
 
-            TextView nombreCarrera = row.findViewById(R.id.calificacion);
-            nombreCarrera.setText("Calificación: " + lista.get(position).getCalificacion());
+            TextView calificacion = row.findViewById(R.id.calificacion);
+            /*if (lista.get(position).getCalificacion().tipoCalificacionStr().isEmpty()){
+                calificacion.setText("Calificación del hecho vacía");
+            } else {*/
+                calificacion.setText("Calificación: " + lista.get(position).getCalificacion());
+            //}
 
-            TextView fechaCurso = row.findViewById(R.id.fechaVerificacion);
-            fechaCurso.setText("Fecha de calificación: " + new SimpleDateFormat("dd/MM/yyyy").format(lista.get(position).getFechaInicioVerificacion()));
+            TextView fechaVerificacion = row.findViewById(R.id.fechaVerificacion);
+            if (lista.get(position).getFechaFinVerificacion() == null ){
+                fechaVerificacion.setText("Hecho sin fecha de verificación");
+            } else {
+                fechaVerificacion.setText("Fecha de calificación: " + new SimpleDateFormat("dd/MM/yyyy").format(lista.get(position).getFechaFinVerificacion()));
+            }
 
-            TextView calificacion = row.findViewById(R.id.estado);
-            calificacion.setText("Calificación: " + lista.get(position).getEstado());
-
+            TextView estado = row.findViewById(R.id.estado);
+            /*if (lista.get(position).getEstado().estadoStr().isEmpty()){
+                estado.setText("Estado del hecho vacío");
+            } else {*/
+            estado.setText("Estado: " + lista.get(position).getEstado());
+            //}
             return row;
         }
     }

@@ -135,7 +135,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements GoogleApiC
             sendIdTokenMail(idToken, mail);
             //
             // updateUI(account);
-            Intent intent = new Intent(this, com.example.fakenews.DisplayHechosActivity.class);
+            Intent intent = new Intent(this, com.example.fakenews.MainActivity.class);
             startActivity(intent);
 
         } catch (ApiException e) {

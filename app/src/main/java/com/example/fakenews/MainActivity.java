@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ import static com.example.fakenews.R.string.navigation_drawer_open;
 public class MainActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainInActivity >>>> ";
     GoogleApiClient mGoogleApiClient;
     GoogleSignInClient mGoogleSignInClient;
     private ApiInterface restApi;
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         // pruebo id de menú opcion_uno
         if (id == R.id.opcion_uno) {
+            Intent intent = new Intent(this, com.example.fakenews.DisplayHechosActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -134,11 +138,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.opcion_uno) {
-            Intent i = new Intent(this, DisplayMessageActivity.class);
+            Intent i = new Intent(this, DisplayHechosActivity.class);
+            Log.w(TAG, "CALL DISPLAY HECHOS" + i.toString());
             startActivity(i);
 
         } else if (id == R.id.opcion_dos) {
-            Intent i = new Intent(this, DisplayMessageActivity.class);
+            Intent i = new Intent(this, DisplayHechosActivity.class);
             startActivity(i);
         }
 
